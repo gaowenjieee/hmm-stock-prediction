@@ -86,9 +86,7 @@ class StockPredictor(object):
                 self.hmm.fit(j)
         '''
 
-        self.hmm.fit([[7.02949468e-05, 3.86238078e-03, 3.86227544e-03], [7.02949468e-05, 3.86238078e-03, 3.86227544e-03],
-                      [7.02949468e-05, 3.86238078e-03, 3.86227544e-03],
-                      [7.02949468e-05, 3.86238078e-03, 3.86227544e-03]])
+        self.hmm.fit(feature_vector)
 
 
     def _compute_all_possible_outcomes(self, n_steps_frac_change,
