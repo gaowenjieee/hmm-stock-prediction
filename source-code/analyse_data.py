@@ -153,4 +153,4 @@ class StockPredictor(object):
 
 stock_predictor = StockPredictor(company=args['--company'])
 stock_predictor.fit()
-stock_predictor.predict_close_prices_for_days(1, with_plot=True)
+stock_predictor.predict_close_prices_for_days(500, with_plot=True)
