@@ -75,6 +75,7 @@ class StockPredictor(object):
         self._logger.info('>>> Extracting Features')
         feature_vector = StockPredictor._extract_features(self._train_data)
         self._logger.info('Features extraction Completed <<<')
+        feature_vector = [[i] for i in feature_vector]
 
         self.hmm.fit(feature_vector)
 
