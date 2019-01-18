@@ -8,6 +8,7 @@ import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
 from hmmlearn.hmm import GaussianHMM
+from hmmlearn.hmm import MultinomialHMM
 from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 from docopt import docopt
@@ -32,6 +33,7 @@ class StockPredictor(object):
         self.n_latency_days = n_latency_days
 
         self.hmm = GaussianHMM(n_components=n_hidden_states)
+        # self.hmm = MultinomialHMM(n_components=n_hidden_states)
 
         self._split_train_test_data(test_size)
 
@@ -75,9 +77,19 @@ class StockPredictor(object):
         self._logger.info('>>> Extracting Features')
         feature_vector = StockPredictor._extract_features(self._train_data)
         self._logger.info('Features extraction Completed <<<')
-        feature_vector = [[i] for i in feature_vector]
+        print(feature_vector)
+        '''
+        for i in feature_vector:
+            for j in i:
+                print(j)
+                print("\n")
+                self.hmm.fit(j)
+        '''
 
-        self.hmm.fit(feature_vector)
+        self.hmm.fit([[7.02949468e-05, 3.86238078e-03, 3.86227544e-03], [7.02949468e-05, 3.86238078e-03, 3.86227544e-03],
+                      [7.02949468e-05, 3.86238078e-03, 3.86227544e-03],
+                      [7.02949468e-05, 3.86238078e-03, 3.86227544e-03]])
+
 
     def _compute_all_possible_outcomes(self, n_steps_frac_change,
                                        n_steps_frac_high, n_steps_frac_low):
@@ -106,14 +118,19 @@ class StockPredictor(object):
         return most_probable_outcome
 
     def predict_close_price(self, day_index):
+
         open_price = self._test_data.iloc[day_index]['open']
+        print(open_price)
+
         predicted_frac_change, _, _ = self._get_most_probable_outcome(
             day_index)
         return open_price * (1 + predicted_frac_change)
 
     def predict_close_prices_for_days(self, days, with_plot=False):
         predicted_close_prices = []
+        print("\ndays = ", days)
         for day_index in tqdm(range(days)):
+            print("\nday_index = ", day_index)
             predicted_close_prices.append(self.predict_close_price(day_index))
 
         if with_plot:
@@ -138,4 +155,4 @@ class StockPredictor(object):
 
 stock_predictor = StockPredictor(company=args['--company'])
 stock_predictor.fit()
-stock_predictor.predict_close_prices_for_days(500, with_plot=True)
+stock_predictor.predict_close_prices_for_days(1, with_plot=True)
